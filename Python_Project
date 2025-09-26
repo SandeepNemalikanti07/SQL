@@ -1,0 +1,1781 @@
+
+Open In Colab
+1.Restaurant Billing System: Write a Python program to calculate the total bill for a customer. The program should ask for the cost of individual items, apply a 10% service charge, and calculate the total.
+
+
+# Ask user how many items they are purchasing
+num_items = int(input("Enter the number of items: "))
+
+# Initialize subtotal
+subtotal = 0
+
+# Get cost of each item and add to subtotal
+for i in range(num_items):
+    price = float(input(f"Enter price of item {i+1}: ₹"))
+    subtotal += price
+
+# Calculate service charge (10%)
+service_charge = subtotal * 0.10
+
+# Calculate total bill
+total = subtotal + service_charge
+
+# Print the bill
+print("\n----- BILL -----")
+print("Subtotal: ₹", round(subtotal, 2))
+print("Service Charge (10%): ₹", round(service_charge, 2))
+print("Total Bill: ₹", round(total, 2))
+
+     
+Enter the number of items: 4
+Enter price of item 1: ₹200
+Enter price of item 2: ₹300
+Enter price of item 3: ₹250
+Enter price of item 4: ₹400
+
+----- BILL -----
+Subtotal: ₹ 1150.0
+Service Charge (10%): ₹ 115.0
+Total Bill: ₹ 1265.0
+2.Simple ATM Machine: Create a Python program that simulates an ATM machine with basic functionalities. The program should allow the user to check their account balance, deposit money, or withdraw funds. It should start with an initial balance of 1000. The user can perform these actions in a loop until they choose to exit. When attempting to withdraw money, the program should ensure that the user does not exceed the available balance and display an appropriate message in case of insufficient funds
+
+
+# Initial balance
+balance = 1000
+
+while True:
+    # Display menu
+    print("\n----- ATM MENU -----")
+    print("1. Check Balance")
+    print("2. Deposit Money")
+    print("3. Withdraw Money")
+    print("4. Exit")
+
+    choice = input("Choose an option (1-4): ")
+
+    if choice == '1':
+        print("Your current balance is: ₹", balance)
+
+    elif choice == '2':
+        deposit = float(input("Enter amount to deposit: ₹"))
+        if deposit > 0:
+            balance += deposit
+            print("₹", deposit, "has been deposited.")
+        else:
+            print("Invalid deposit amount.")
+
+    elif choice == '3':
+        withdraw = float(input("Enter amount to withdraw: ₹"))
+        if withdraw <= balance and withdraw > 0:
+            balance -= withdraw
+            print("₹", withdraw, "has been withdrawn.")
+        elif withdraw <= 0:
+            print("Invalid withdrawal amount.")
+        else:
+            print("Insufficient funds. Your balance is ₹", balance)
+
+    elif choice == '4':
+        print("Thank you for using the ATM. Goodbye!")
+        break
+
+    else:
+        print("Invalid option. Please choose 1-4.")
+
+     
+----- ATM MENU -----
+1. Check Balance
+2. Deposit Money
+3. Withdraw Money
+4. Exit
+Choose an option (1-4): 1
+Your current balance is: ₹ 1000
+
+----- ATM MENU -----
+1. Check Balance
+2. Deposit Money
+3. Withdraw Money
+4. Exit
+Choose an option (1-4): 2
+Enter amount to deposit: ₹500
+₹ 500.0 has been deposited.
+
+----- ATM MENU -----
+1. Check Balance
+2. Deposit Money
+3. Withdraw Money
+4. Exit
+Choose an option (1-4): 3
+Enter amount to withdraw: ₹500
+₹ 500.0 has been withdrawn.
+
+----- ATM MENU -----
+1. Check Balance
+2. Deposit Money
+3. Withdraw Money
+4. Exit
+Choose an option (1-4): 4
+Thank you for using the ATM. Goodbye!
+3.Grocery Store Inventory: Create a Python program that represents a grocery store inventory using a dictionary, where the keys are the names of items and the values are their quantities. The program should allow the user to perform the following actions: update the quantity of an existing item, add a new item to the inventory with a specified quantity, and remove an item from the inventory. The user should be prompted for their desired action, and the program should handle invalid input gracefully. This will help in understanding dictionary manipulation and user interaction in Python
+
+
+# Grocery inventory dictionary
+inventory = {
+    "apples": 10,
+    "bananas": 15,
+    "milk": 5
+}
+
+def show_inventory():
+    print("\nCurrent Inventory:")
+    for item, quantity in inventory.items():
+        print(f"- {item}: {quantity}")
+    if not inventory:
+        print("Inventory is empty.")
+
+while True:
+    print("\n--- Grocery Store Inventory ---")
+    print("1. View Inventory")
+    print("2. Add New Item")
+    print("3. Update Existing Item Quantity")
+    print("4. Remove Item")
+    print("5. Exit")
+
+    choice = input("Choose an option (1-5): ")
+
+    if choice == '1':
+        show_inventory()
+
+    elif choice == '2':
+        item = input("Enter item name to add: ").lower()
+        if item in inventory:
+            print(f"{item} already exists. Use update option to change quantity.")
+        else:
+            try:
+                qty = int(input(f"Enter quantity of {item}: "))
+                inventory[item] = qty
+                print(f"{item} added with quantity {qty}.")
+            except ValueError:
+                print("Invalid quantity. Please enter a number.")
+
+    elif choice == '3':
+        item = input("Enter item name to update: ").lower()
+        if item in inventory:
+            try:
+                qty = int(input(f"Enter new quantity for {item}: "))
+                inventory[item] = qty
+                print(f"{item} updated to quantity {qty}.")
+            except ValueError:
+                print("Invalid quantity. Please enter a number.")
+        else:
+            print(f"{item} not found in inventory.")
+
+    elif choice == '4':
+        item = input("Enter item name to remove: ").lower()
+        if item in inventory:
+            del inventory[item]
+            print(f"{item} removed from inventory.")
+        else:
+            print(f"{item} not found in inventory.")
+
+    elif choice == '5':
+        print("Exiting Grocery Inventory System. Goodbye!")
+        break
+
+    else:
+        print("Invalid choice. Please select an option from 1 to 5.")
+
+     
+--- Grocery Store Inventory ---
+1. View Inventory
+2. Add New Item
+3. Update Existing Item Quantity
+4. Remove Item
+5. Exit
+Choose an option (1-5): 1
+
+Current Inventory:
+- apples: 10
+- bananas: 15
+- milk: 5
+
+--- Grocery Store Inventory ---
+1. View Inventory
+2. Add New Item
+3. Update Existing Item Quantity
+4. Remove Item
+5. Exit
+Choose an option (1-5): 2
+Enter item name to add: 3
+Enter quantity of 3: 4
+3 added with quantity 4.
+
+--- Grocery Store Inventory ---
+1. View Inventory
+2. Add New Item
+3. Update Existing Item Quantity
+4. Remove Item
+5. Exit
+Choose an option (1-5): 5
+Exiting Grocery Inventory System. Goodbye!
+4.Library Book Tracker: Develop a Python program to manage a library system with options to add, remove, and search for books
+
+
+# Initial list of books in the library
+library = ["The Great Gatsby", "To Kill a Mockingbird", "1984"]
+
+def show_books():
+    print("\n📚 Current Books in Library:")
+    if library:
+        for book in library:
+            print(f"- {book}")
+    else:
+        print("The library is currently empty.")
+
+def add_book():
+    book = input("Enter the name of the book to add: ").strip()
+    if book:
+        if book in library:
+            print("This book already exists in the library.")
+        else:
+            library.append(book)
+            print(f"'{book}' has been added to the library.")
+    else:
+        print("Invalid input. Book name cannot be empty.")
+
+def remove_book():
+    book = input("Enter the name of the book to remove: ").strip()
+    if book in library:
+        library.remove(book)
+        print(f"'{book}' has been removed from the library.")
+    else:
+        print(f"'{book}' not found in the library.")
+
+def search_book():
+    book = input("Enter the name of the book to search for: ").strip()
+    if book in library:
+        print(f"'{book}' is available in the library.")
+    else:
+        print(f"'{book}' is not in the library.")
+
+# Main menu loop
+while True:
+    print("\n--- Library Book Tracker ---")
+    print("1. View All Books")
+    print("2. Add Book")
+    print("3. Remove Book")
+    print("4. Search Book")
+    print("5. Exit")
+
+    choice = input("Choose an option (1-5): ")
+
+    if choice == '1':
+        show_books()
+    elif choice == '2':
+        add_book()
+    elif choice == '3':
+        remove_book()
+    elif choice == '4':
+        search_book()
+    elif choice == '5':
+        print("Exiting Library System. Goodbye!")
+        break
+    else:
+        print("Invalid choice. Please select a valid option (1-5).")
+
+     
+--- Library Book Tracker ---
+1. View All Books
+2. Add Book
+3. Remove Book
+4. Search Book
+5. Exit
+Choose an option (1-5): 1
+
+📚 Current Books in Library:
+- The Great Gatsby
+- To Kill a Mockingbird
+- 1984
+
+--- Library Book Tracker ---
+1. View All Books
+2. Add Book
+3. Remove Book
+4. Search Book
+5. Exit
+Choose an option (1-5): 2
+Enter the name of the book to add: choosen
+'choosen' has been added to the library.
+
+--- Library Book Tracker ---
+1. View All Books
+2. Add Book
+3. Remove Book
+4. Search Book
+5. Exit
+Choose an option (1-5): 3
+Enter the name of the book to remove: choosen
+'choosen' has been removed from the library.
+
+--- Library Book Tracker ---
+1. View All Books
+2. Add Book
+3. Remove Book
+4. Search Book
+5. Exit
+Choose an option (1-5): 4
+Enter the name of the book to search for: choosen
+'choosen' is not in the library.
+
+--- Library Book Tracker ---
+1. View All Books
+2. Add Book
+3. Remove Book
+4. Search Book
+5. Exit
+Choose an option (1-5): 5
+Exiting Library System. Goodbye!
+5.Temperature Converter with History: Create Cre a Python program that functions as a temperature converter, allowing the user to convert temperatures between Celsius and Fahrenheit. The program should store and display the last five conversions, showing both the input value and the result. The user should be able to choose the direction of conversion (Celsius to Fahrenheit or Fahrenheit to Celsius), and the program should maintain a history of the last five conversions, displaying the most recent ones at the end of each conversion
+
+
+from collections import deque
+
+def celsius_to_fahrenheit(celsius):
+    return (celsius * 9/5) + 32
+
+def fahrenheit_to_celsius(fahrenheit):
+    return (fahrenheit - 32) * 5/9
+
+def display_history(history):
+    print("\nLast 5 conversions:")
+    for entry in history:
+        print(entry)
+
+def main():
+    history = deque(maxlen=5)  # Automatically removes oldest entries
+
+    while True:
+        print("\nTemperature Converter")
+        print("1. Celsius to Fahrenheit")
+        print("2. Fahrenheit to Celsius")
+        print("3. Exit")
+
+        choice = input("Choose an option (1/2/3): ")
+
+        if choice == '1':
+            try:
+                celsius = float(input("Enter temperature in Celsius: "))
+                fahrenheit = celsius_to_fahrenheit(celsius)
+                result = f"{celsius}°C = {fahrenheit:.2f}°F"
+                print(result)
+                history.append(result)
+            except ValueError:
+                print("Please enter a valid number.")
+        elif choice == '2':
+            try:
+                fahrenheit = float(input("Enter temperature in Fahrenheit: "))
+                celsius = fahrenheit_to_celsius(fahrenheit)
+                result = f"{fahrenheit}°F = {celsius:.2f}°C"
+                print(result)
+                history.append(result)
+            except ValueError:
+                print("Please enter a valid number.")
+        elif choice == '3':
+            print("Exiting the program.")
+            break
+        else:
+            print("Invalid choice. Please select 1, 2, or 3.")
+
+        display_history(history)
+
+if __name__ == "__main__":
+    main()
+
+     
+Temperature Converter
+1. Celsius to Fahrenheit
+2. Fahrenheit to Celsius
+3. Exit
+Choose an option (1/2/3): 1
+Enter temperature in Celsius: 40
+40.0°C = 104.00°F
+
+Last 5 conversions:
+40.0°C = 104.00°F
+
+Temperature Converter
+1. Celsius to Fahrenheit
+2. Fahrenheit to Celsius
+3. Exit
+Choose an option (1/2/3): 2
+Enter temperature in Fahrenheit: 30
+30.0°F = -1.11°C
+
+Last 5 conversions:
+40.0°C = 104.00°F
+30.0°F = -1.11°C
+
+Temperature Converter
+1. Celsius to Fahrenheit
+2. Fahrenheit to Celsius
+3. Exit
+Choose an option (1/2/3): 3
+Exiting the program.
+6. Number Guessing Game: Create a Python program where the computer randomly selects a number between 1 and 100, and the user has to guess the number. After each guess, the program should provide feedback such as 'Too High' if the guess is greater than the number, or 'Too Low' if the guess is smaller. The program should continue prompting the user for guesses until the correct number is guessed, and then it should congratulate the user for finding the number
+
+
+import random
+
+def number_guessing_game():
+    number_to_guess = random.randint(1, 100)
+    attempts = 0
+
+    print("Welcome to the Number Guessing Game!")
+    print("I'm thinking of a number between 1 and 100.")
+
+    while True:
+        try:
+            guess = int(input("Enter your guess: "))
+            attempts += 1
+
+            if guess < 1 or guess > 100:
+                print("Please guess a number between 1 and 100.")
+                continue
+
+            if guess < number_to_guess:
+                print("Too Low!")
+            elif guess > number_to_guess:
+                print("Too High!")
+            else:
+                print(f"Congratulations! You guessed the number in {attempts} attempts.")
+                break
+        except ValueError:
+            print("Please enter a valid number.")
+
+if __name__ == "__main__":
+    number_guessing_game()
+
+     
+Welcome to the Number Guessing Game!
+I'm thinking of a number between 1 and 100.
+Enter your guess: 10
+Too Low!
+Enter your guess: 20
+Too Low!
+Enter your guess: 30
+Too Low!
+Enter your guess: 50
+Too Low!
+Enter your guess: 70
+Too High!
+Enter your guess: 60
+Too Low!
+Enter your guess: 65
+Too High!
+Enter your guess: 64
+Too High!
+Enter your guess: 63
+Congratulations! You guessed the number in 9 attempts.
+7. Basic Calculator with History: Create a Python program that implements a calculator capable of performing addition, subtraction, multiplication, and division. The program should allow the user to input two numbers and select the desired operation. After each calculation, the program should display the result and store the last three calculations. If more than three calculations are performed, the oldest one should be removed to make room for the new one.
+
+
+from collections import deque
+
+def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+def multiply(a, b):
+    return a * b
+
+def divide(a, b):
+    return a / b if b != 0 else "Error: Division by zero"
+
+def display_history(history):
+    print("\nLast 3 calculations:")
+    for entry in history:
+        print(entry)
+
+def main():
+    history = deque(maxlen=3)
+
+    while True:
+        print("\nBasic Calculator")
+        print("1. Add")
+        print("2. Subtract")
+        print("3. Multiply")
+        print("4. Divide")
+        print("5. Exit")
+
+        choice = input("Choose an operation (1/2/3/4/5): ")
+
+        if choice in ['1', '2', '3', '4']:
+            try:
+                num1 = float(input("Enter first number: "))
+                num2 = float(input("Enter second number: "))
+
+                if choice == '1':
+                    result = add(num1, num2)
+                    operation = f"{num1} + {num2} = {result}"
+                elif choice == '2':
+                    result = subtract(num1, num2)
+                    operation = f"{num1} - {num2} = {result}"
+                elif choice == '3':
+                    result = multiply(num1, num2)
+                    operation = f"{num1} * {num2} = {result}"
+                elif choice == '4':
+                    result = divide(num1, num2)
+                    operation = f"{num1} / {num2} = {result}"
+
+                print("Result:", result)
+                history.append(operation)
+
+            except ValueError:
+                print("Please enter valid numbers.")
+        elif choice == '5':
+            print("Exiting the calculator.")
+            break
+        else:
+            print("Invalid choice. Please select a number from 1 to 5.")
+
+        display_history(history)
+
+if __name__ == "__main__":
+    main()
+
+     
+Basic Calculator
+1. Add
+2. Subtract
+3. Multiply
+4. Divide
+5. Exit
+Choose an operation (1/2/3/4/5): 1
+Enter first number: 75
+Enter second number: 25
+Result: 100.0
+
+Last 3 calculations:
+75.0 + 25.0 = 100.0
+
+Basic Calculator
+1. Add
+2. Subtract
+3. Multiply
+4. Divide
+5. Exit
+Choose an operation (1/2/3/4/5): 2
+Enter first number: 75
+Enter second number: 25
+Result: 50.0
+
+Last 3 calculations:
+75.0 + 25.0 = 100.0
+75.0 - 25.0 = 50.0
+
+Basic Calculator
+1. Add
+2. Subtract
+3. Multiply
+4. Divide
+5. Exit
+Choose an operation (1/2/3/4/5): 3
+Enter first number: 75
+Enter second number: 25
+Result: 1875.0
+
+Last 3 calculations:
+75.0 + 25.0 = 100.0
+75.0 - 25.0 = 50.0
+75.0 * 25.0 = 1875.0
+
+Basic Calculator
+1. Add
+2. Subtract
+3. Multiply
+4. Divide
+5. Exit
+Choose an operation (1/2/3/4/5): 4
+Enter first number: 75
+Enter second number: 25
+Result: 3.0
+
+Last 3 calculations:
+75.0 - 25.0 = 50.0
+75.0 * 25.0 = 1875.0
+75.0 / 25.0 = 3.0
+
+Basic Calculator
+1. Add
+2. Subtract
+3. Multiply
+4. Divide
+5. Exit
+Choose an operation (1/2/3/4/5): 5
+Exiting the calculator.
+8.  Student Grade Calculator: Create a Python program that takes the marks for 5 subjects as input from the user, calculates the total marks, the average score, and assigns a grade based on the average. The grade can be determined based on typical thresholds, such as: A: Average >= 90 B: Average >= 75 C: Average >= 60 D: Average >= 50 F: Average < 50 The program should display the total marks, average, and corresponding grade to the user
+
+
+  def calculate_grade(average):
+    if average >= 90:
+        return 'A'
+    elif average >= 75:
+        return 'B'
+    elif average >= 60:
+        return 'C'
+    elif average >= 50:
+        return 'D'
+    else:
+        return 'F'
+
+def main():
+    print("Student Grade Calculator")
+
+    marks = []
+    for i in range(1, 6):
+        while True:
+            try:
+                mark = float(input(f"Enter marks for subject {i} (out of 100): "))
+                if 0 <= mark <= 100:
+                    marks.append(mark)
+                    break
+                else:
+                    print("Please enter a valid mark between 0 and 100.")
+            except ValueError:
+                print("Please enter a numeric value.")
+
+    total = sum(marks)
+    average = total / 5
+    grade = calculate_grade(average)
+
+    print("\n----- Results -----")
+    print(f"Total Marks: {total}")
+    print(f"Average Score: {average:.2f}")
+    print(f"Grade: {grade}")
+
+if __name__ == "__main__":
+    main()
+
+     
+Student Grade Calculator
+Enter marks for subject 1 (out of 100): 75
+Enter marks for subject 2 (out of 100): 80
+Enter marks for subject 3 (out of 100): 60
+Enter marks for subject 4 (out of 100): 65
+Enter marks for subject 5 (out of 100): 70
+
+----- Results -----
+Total Marks: 350.0
+Average Score: 70.00
+Grade: C
+9.Word Frequency Converter: Create a Python program that allows the user to input a sentence, then counts the frequency of each word in the sentence
+
+
+ from collections import Counter
+
+def word_frequency_converter():
+    sentence = input("Enter a sentence: ")
+
+    # Normalize the sentence: remove punctuation and convert to lowercase
+    words = sentence.lower().split()
+
+    # Count word frequencies
+    frequency = Counter(words)
+
+    # Display the results
+    print("\nWord Frequencies:")
+    for word, count in frequency.items():
+        print(f"'{word}': {count}")
+
+if __name__ == "__main__":
+    word_frequency_converter()
+
+     
+Enter a sentence: This is a test. This is only a test
+
+Word Frequencies:
+'this': 2
+'is': 2
+'a': 2
+'test.': 1
+'only': 1
+'test': 1
+10.Simple Quiz Application: Create a Python quiz program with 5 questions and multiple-choice answers. Display the score at the end
+
+
+def run_quiz():
+    questions = [
+        {
+            "question": "What is the capital of France?",
+            "options": ["A. Berlin", "B. London", "C. Paris", "D. Rome"],
+            "answer": "C"
+        },
+        {
+            "question": "Which planet is known as the Red Planet?",
+            "options": ["A. Earth", "B. Mars", "C. Jupiter", "D. Venus"],
+            "answer": "B"
+        },
+        {
+            "question": "Who wrote the play 'Romeo and Juliet'?",
+            "options": ["A. Charles Dickens", "B. J.K. Rowling", "C. William Shakespeare", "D. Mark Twain"],
+            "answer": "C"
+        },
+        {
+            "question": "What is the largest mammal in the world?",
+            "options": ["A. Elephant", "B. Giraffe", "C. Blue Whale", "D. Hippo"],
+            "answer": "C"
+        },
+        {
+            "question": "Which gas do plants use for photosynthesis?",
+            "options": ["A. Oxygen", "B. Nitrogen", "C. Carbon Dioxide", "D. Hydrogen"],
+            "answer": "C"
+        }
+    ]
+
+    score = 0
+
+    for i, q in enumerate(questions, 1):
+        print(f"\nQuestion {i}: {q['question']}")
+        for option in q['options']:
+            print(option)
+
+        answer = input("Your answer (A/B/C/D): ").strip().upper()
+        if answer == q["answer"]:
+            print("Correct!")
+            score += 1
+        else:
+            print(f"Wrong! The correct answer was {q['answer']}.")
+
+    print("\n----- Quiz Completed -----")
+    print(f"Your score: {score} out of {len(questions)}")
+
+if __name__ == "__main__":
+    run_quiz()
+
+     
+Question 1: What is the capital of France?
+A. Berlin
+B. London
+C. Paris
+D. Rome
+Your answer (A/B/C/D): C
+Correct!
+
+Question 2: Which planet is known as the Red Planet?
+A. Earth
+B. Mars
+C. Jupiter
+D. Venus
+Your answer (A/B/C/D): B
+Correct!
+
+Question 3: Who wrote the play 'Romeo and Juliet'?
+A. Charles Dickens
+B. J.K. Rowling
+C. William Shakespeare
+D. Mark Twain
+Your answer (A/B/C/D): C
+Correct!
+
+Question 4: What is the largest mammal in the world?
+A. Elephant
+B. Giraffe
+C. Blue Whale
+D. Hippo
+Your answer (A/B/C/D): C
+Correct!
+
+Question 5: Which gas do plants use for photosynthesis?
+A. Oxygen
+B. Nitrogen
+C. Carbon Dioxide
+D. Hydrogen
+Your answer (A/B/C/D): B
+Wrong! The correct answer was C.
+
+----- Quiz Completed -----
+Your score: 4 out of 5
+11.Currency Converter: Create a Python program that converts currency from USD (United States Dollar) to INR (Indian Rupee), EUR (Euro), and GBP (British Pound) based on provided exchange rates. The program should prompt the user to input the amount in USD and the exchange rates for INR, EUR, and GBP. It will then calculate and display the converted amounts for each of these currencies. The user should also be able to input new exchange rates if desired
+
+
+def convert_currency(usd_amount, exchange_rates):
+    inr = usd_amount * exchange_rates['INR']
+    eur = usd_amount * exchange_rates['EUR']
+    gbp = usd_amount * exchange_rates['GBP']
+    return inr, eur, gbp
+
+def get_exchange_rates():
+    print("Enter current exchange rates:")
+    inr = float(input("USD to INR: "))
+    eur = float(input("USD to EUR: "))
+    gbp = float(input("USD to GBP: "))
+    return {'INR': inr, 'EUR': eur, 'GBP': gbp}
+
+# Initial exchange rates
+exchange_rates = get_exchange_rates()
+
+while True:
+    try:
+        usd = float(input("\nEnter amount in USD: "))
+        inr, eur, gbp = convert_currency(usd, exchange_rates)
+
+        print(f"\nConverted Amounts:")
+        print(f"INR: ₹{inr:.2f}")
+        print(f"EUR: €{eur:.2f}")
+        print(f"GBP: £{gbp:.2f}")
+    except ValueError:
+        print("Invalid input. Please enter numbers only.")
+        continue
+
+    # Ask to update exchange rates
+    choice = input("\nDo you want to update exchange rates? (yes/no): ").lower()
+    if choice == 'yes':
+        exchange_rates = get_exchange_rates()
+
+    # Ask to continue or exit
+    again = input("\nDo you want to convert another amount? (yes/no): ").lower()
+    if again != 'yes':
+        print("Thank you for using the Currency Converter.")
+        break
+
+     
+Enter current exchange rates:
+USD to INR: 7000
+USD to EUR: 5000
+USD to GBP: 2000
+
+Enter amount in USD: 7000
+
+Converted Amounts:
+INR: ₹49000000.00
+EUR: €35000000.00
+GBP: £14000000.00
+
+Do you want to update exchange rates? (yes/no): no
+
+Do you want to convert another amount? (yes/no): no
+Thank you for using the Currency Converter.
+12.Event Ticket System: Create a Python program to sell tickets for an event where the user can choose the type of ticket (VIP, Regular, or Economy) and specify the number of tickets they want to purchase. The program should display the price for each ticket type, calculate the total cost based on the number of tickets, and then prompt the user to confirm the purchase. The ticket prices can be predefined, for example: VIP: 
+50 Economy: $20 After the user selects the ticket type and number, the program should display the total price for the tickets and confirm the transaction
+
+
+ def display_ticket_prices():
+    print("\n--- Ticket Prices ---")
+    print("1. VIP     - $100")
+    print("2. Regular - $50")
+    print("3. Economy - $20")
+
+def get_ticket_price(ticket_type):
+    prices = {"VIP": 100, "Regular": 50, "Economy": 20}
+    return prices.get(ticket_type, 0)
+
+def main():
+    while True:
+        display_ticket_prices()
+
+        ticket_type = input("\nEnter ticket type (VIP / Regular / Economy): ").capitalize()
+
+        if ticket_type not in ["VIP", "Regular", "Economy"]:
+            print("Invalid ticket type. Please try again.")
+            continue
+
+        try:
+            num_tickets = int(input(f"How many {ticket_type} tickets do you want to buy? "))
+            if num_tickets <= 0:
+                print("Please enter a positive number.")
+                continue
+        except ValueError:
+            print("Invalid number. Please enter digits only.")
+            continue
+
+        price_per_ticket = get_ticket_price(ticket_type)
+        total_price = price_per_ticket * num_tickets
+
+        print(f"\nTotal cost for {num_tickets} {ticket_type} tickets: ${total_price}")
+        confirm = input("Do you want to confirm the purchase? (yes/no): ").lower()
+
+        if confirm == "yes":
+            print(f"\n✅ Purchase confirmed. Enjoy your {ticket_type} experience!")
+        else:
+            print("\n❌ Purchase cancelled.")
+
+        again = input("\nDo you want to book more tickets? (yes/no): ").lower()
+        if again != "yes":
+            print("\nThank you for using the Event Ticket System!")
+            break
+
+# Run the program
+main()
+
+     
+--- Ticket Prices ---
+1. VIP     - $100
+2. Regular - $50
+3. Economy - $20
+
+Enter ticket type (VIP / Regular / Economy): Regular
+How many Regular tickets do you want to buy? 4
+
+Total cost for 4 Regular tickets: $200
+Do you want to confirm the purchase? (yes/no): yes
+
+✅ Purchase confirmed. Enjoy your Regular experience!
+
+Do you want to book more tickets? (yes/no): no
+
+Thank you for using the Event Ticket System!
+13.To-Do List Manager: Create a Python program that implements a simple to-do list manager. The program should allow the user to perform the following actions: Add a task: Add a new task to the to-do list. Remove a task: Remove a task from the to-do list by specifying its index or name. Mark a task as done: Mark a specific task as completed. Display pending tasks: Show all tasks that have not yet been marked as done. The program should display a menu with these options, and the user can choose which action to perform. It should store the tasks in a list, and each task can be represented by a dictionary with properties like task name and whether it's done or not
+
+
+ def display_menu():
+    print("\n=== TO-DO LIST MENU ===")
+    print("1. Add a Task")
+    print("2. Remove a Task")
+    print("3. Mark Task as Done")
+    print("4. Display Pending Tasks")
+    print("5. Show All Tasks")
+    print("6. Exit")
+
+def add_task(todo_list):
+    task_name = input("Enter task name: ")
+    todo_list.append({"name": task_name, "done": False})
+    print(f"Task '{task_name}' added.")
+
+def remove_task(todo_list):
+    show_all_tasks(todo_list)
+    task_index = input("Enter task number to remove: ")
+    if task_index.isdigit():
+        task_index = int(task_index)
+        if 0 <= task_index < len(todo_list):
+            removed = todo_list.pop(task_index)
+            print(f"Task '{removed['name']}' removed.")
+        else:
+            print("Invalid task number.")
+    else:
+        print("Please enter a valid number.")
+
+def mark_task_done(todo_list):
+    show_all_tasks(todo_list)
+    task_index = input("Enter task number to mark as done: ")
+    if task_index.isdigit():
+        task_index = int(task_index)
+        if 0 <= task_index < len(todo_list):
+            todo_list[task_index]['done'] = True
+            print(f"Task '{todo_list[task_index]['name']}' marked as done.")
+        else:
+            print("Invalid task number.")
+    else:
+        print("Please enter a valid number.")
+
+def show_pending_tasks(todo_list):
+    print("\n=== Pending Tasks ===")
+    found = False
+    for i, task in enumerate(todo_list):
+        if not task['done']:
+            print(f"{i}. {task['name']}")
+            found = True
+    if not found:
+        print("No pending tasks.")
+
+def show_all_tasks(todo_list):
+    print("\n=== All Tasks ===")
+    if not todo_list:
+        print("No tasks in the list.")
+        return
+    for i, task in enumerate(todo_list):
+        status = "✔ Done" if task['done'] else "❌ Pending"
+        print(f"{i}. {task['name']} - {status}")
+
+def main():
+    todo_list = []
+
+    while True:
+        display_menu()
+        choice = input("Enter your choice (1-6): ")
+
+        if choice == "1":
+            add_task(todo_list)
+        elif choice == "2":
+            remove_task(todo_list)
+        elif choice == "3":
+            mark_task_done(todo_list)
+        elif choice == "4":
+            show_pending_tasks(todo_list)
+        elif choice == "5":
+            show_all_tasks(todo_list)
+        elif choice == "6":
+            print("Exiting To-Do List Manager. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+# Run the to-do manager
+main()
+def display_menu():
+    print("\n=== TO-DO LIST MENU ===")
+    print("1. Add a Task")
+    print("2. Remove a Task")
+    print("3. Mark Task as Done")
+    print("4. Display Pending Tasks")
+    print("5. Show All Tasks")
+    print("6. Exit")
+
+def add_task(todo_list):
+    task_name = input("Enter task name: ")
+    todo_list.append({"name": task_name, "done": False})
+    print(f"Task '{task_name}' added.")
+
+def remove_task(todo_list):
+    show_all_tasks(todo_list)
+    task_index = input("Enter task number to remove: ")
+    if task_index.isdigit():
+        task_index = int(task_index)
+        if 0 <= task_index < len(todo_list):
+            removed = todo_list.pop(task_index)
+            print(f"Task '{removed['name']}' removed.")
+        else:
+            print("Invalid task number.")
+    else:
+        print("Please enter a valid number.")
+
+def mark_task_done(todo_list):
+    show_all_tasks(todo_list)
+    task_index = input("Enter task number to mark as done: ")
+    if task_index.isdigit():
+        task_index = int(task_index)
+        if 0 <= task_index < len(todo_list):
+            todo_list[task_index]['done'] = True
+            print(f"Task '{todo_list[task_index]['name']}' marked as done.")
+        else:
+            print("Invalid task number.")
+    else:
+        print("Please enter a valid number.")
+
+def show_pending_tasks(todo_list):
+    print("\n=== Pending Tasks ===")
+    found = False
+    for i, task in enumerate(todo_list):
+        if not task['done']:
+            print(f"{i}. {task['name']}")
+            found = True
+    if not found:
+        print("No pending tasks.")
+
+def show_all_tasks(todo_list):
+    print("\n=== All Tasks ===")
+    if not todo_list:
+        print("No tasks in the list.")
+        return
+    for i, task in enumerate(todo_list):
+        status = "✔ Done" if task['done'] else "❌ Pending"
+        print(f"{i}. {task['name']} - {status}")
+
+def main():
+    todo_list = []
+
+    while True:
+        display_menu()
+        choice = input("Enter your choice (1-6): ")
+
+        if choice == "1":
+            add_task(todo_list)
+        elif choice == "2":
+            remove_task(todo_list)
+        elif choice == "3":
+            mark_task_done(todo_list)
+        elif choice == "4":
+            show_pending_tasks(todo_list)
+        elif choice == "5":
+            show_all_tasks(todo_list)
+        elif choice == "6":
+            print("Exiting To-Do List Manager. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+# Run the to-do manager
+main()
+
+     
+=== TO-DO LIST MENU ===
+1. Add a Task
+2. Remove a Task
+3. Mark Task as Done
+4. Display Pending Tasks
+5. Show All Tasks
+6. Exit
+Enter your choice (1-6): 1
+Enter task name: buy groceries 
+Task 'buy groceries ' added.
+
+=== TO-DO LIST MENU ===
+1. Add a Task
+2. Remove a Task
+3. Mark Task as Done
+4. Display Pending Tasks
+5. Show All Tasks
+6. Exit
+Enter your choice (1-6): 3
+
+=== All Tasks ===
+0. buy groceries  - ❌ Pending
+Enter task number to mark as done: 0
+Task 'buy groceries ' marked as done.
+
+=== TO-DO LIST MENU ===
+1. Add a Task
+2. Remove a Task
+3. Mark Task as Done
+4. Display Pending Tasks
+5. Show All Tasks
+6. Exit
+Enter your choice (1-6): 4
+
+=== Pending Tasks ===
+No pending tasks.
+
+=== TO-DO LIST MENU ===
+1. Add a Task
+2. Remove a Task
+3. Mark Task as Done
+4. Display Pending Tasks
+5. Show All Tasks
+6. Exit
+Enter your choice (1-6): 5
+
+=== All Tasks ===
+0. buy groceries  - ✔ Done
+
+=== TO-DO LIST MENU ===
+1. Add a Task
+2. Remove a Task
+3. Mark Task as Done
+4. Display Pending Tasks
+5. Show All Tasks
+6. Exit
+Enter your choice (1-6): 6
+Exiting To-Do List Manager. Goodbye!
+
+=== TO-DO LIST MENU ===
+1. Add a Task
+2. Remove a Task
+3. Mark Task as Done
+4. Display Pending Tasks
+5. Show All Tasks
+6. Exit
+Enter your choice (1-6): 6
+Exiting To-Do List Manager. Goodbye!
+14. Age Calculator: Calculate a person's age based on their date of birth
+
+
+ from datetime import datetime
+
+def calculate_age(dob_str):
+    try:
+        dob = datetime.strptime(dob_str, "%Y-%m-%d")
+    except ValueError:
+        print("Invalid date format. Please use YYYY-MM-DD.")
+        return
+
+    today = datetime.today()
+    years = today.year - dob.year
+    months = today.month - dob.month
+    days = today.day - dob.day
+
+    # Adjust for past birthday
+    if days < 0:
+        months -= 1
+        days += (datetime(today.year, today.month, 1) - datetime(today.year, today.month - 1, 1)).days
+    if months < 0:
+        years -= 1
+        months += 12
+
+    print(f"\nYou are {years} years, {months} months, and {days} days old.")
+
+# Main program
+dob_input = input("Enter your date of birth (YYYY-MM-DD): ")
+calculate_age(dob_input)
+
+     
+Enter your date of birth (YYYY-MM-DD): 2003-04-11
+
+You are 22 years, 1 months, and 29 days old.
+15.Online Shopping Cart: Simulate a shopping cart where users can add, remove, and view items.
+
+
+# Simple Online Shopping Cart Program
+
+cart = []
+
+def show_menu():
+    print("\n--- Shopping Cart Menu ---")
+    print("1. Add item")
+    print("2. Remove item")
+    print("3. View cart")
+    print("4. Quit")
+
+def add_item():
+    item = input("Enter the item to add: ")
+    cart.append(item)
+    print(f"'{item}' has been added to your cart.")
+
+def remove_item():
+    item = input("Enter the item to remove: ")
+    if item in cart:
+        cart.remove(item)
+        print(f"'{item}' has been removed from your cart.")
+    else:
+        print(f"'{item}' not found in the cart.")
+
+def view_cart():
+    if cart:
+        print("\nItems in your cart:")
+        for i, item in enumerate(cart, start=1):
+            print(f"{i}. {item}")
+    else:
+        print("Your cart is empty.")
+
+# Main loop
+while True:
+    show_menu()
+    choice = input("Enter your choice (1-4): ")
+
+    if choice == '1':
+        add_item()
+    elif choice == '2':
+        remove_item()
+    elif choice == '3':
+        view_cart()
+    elif choice == '4':
+        print("Thank you for shopping. Goodbye!")
+        break
+    else:
+        print("Invalid choice. Please try again.")
+
+     
+--- Shopping Cart Menu ---
+1. Add item
+2. Remove item
+3. View cart
+4. Quit
+Enter your choice (1-4): 1
+Enter the item to add: book
+'book' has been added to your cart.
+
+--- Shopping Cart Menu ---
+1. Add item
+2. Remove item
+3. View cart
+4. Quit
+Enter your choice (1-4): 2
+Enter the item to remove: book
+'book' has been removed from your cart.
+
+--- Shopping Cart Menu ---
+1. Add item
+2. Remove item
+3. View cart
+4. Quit
+Enter your choice (1-4): 3
+Your cart is empty.
+
+--- Shopping Cart Menu ---
+1. Add item
+2. Remove item
+3. View cart
+4. Quit
+Enter your choice (1-4): 4
+Thank you for shopping. Goodbye!
+16.File Content Reverser: Take a text file as input and create a new file with its contents reversed.
+
+
+# File Content Reverser
+
+# Input file name
+input_file = "input.txt"
+# Output file name
+output_file = "reversed.txt"
+
+# Read the content from the input file
+try:
+    with open(input_file, 'r') as f:
+        pass # File exists, do nothing
+except FileNotFoundError:
+    print(f"Creating a dummy '{input_file}' file.")
+    with open(input_file, 'w') as f:
+        f.write("This is a test sentence to be reversed.")
+     
+Creating a dummy 'input.txt' file.
+17.Employee Payroll System: Create a Python program that calculates an employee's salary after accounting for deductions like tax and adding bonuses. The program should allow the user to input the employee's base salary, tax percentage, and any bonuses. It should then calculate the amount deducted for taxes, add the bonus to the salary, and display the final salary after deductions and bonuses. The tax can be calculated as a percentage of the base salary, and the final salary will be the sum of the base salary minus tax plus any bonus
+
+
+# Employee Payroll System
+
+# Input from user
+base_salary = float(input("Enter the base salary: ₹"))
+tax_percent = float(input("Enter the tax percentage: "))
+bonus = float(input("Enter the bonus amount: ₹"))
+
+# Calculations
+tax_amount = (tax_percent / 100) * base_salary
+final_salary = base_salary - tax_amount + bonus
+
+# Output results
+print("\n--- Salary Details ---")
+print(f"Base Salary     : ₹{base_salary:.2f}")
+print(f"Tax Deducted    : ₹{tax_amount:.2f}")
+print(f"Bonus Added     : ₹{bonus:.2f}")
+print(f"Final Salary    : ₹{final_salary:.2f}")
+
+     
+Enter the base salary: ₹75000
+Enter the tax percentage: 7.5
+Enter the bonus amount: ₹20000
+
+--- Salary Details ---
+Base Salary     : ₹75000.00
+Tax Deducted    : ₹5625.00
+Bonus Added     : ₹20000.00
+Final Salary    : ₹89375.00
+Enter the base salary: ₹50000
+Enter the tax percentage: 10
+Enter the bonus amount: ₹2000
+
+--- Salary Details ---
+Base Salary     : ₹50000.00
+Tax Deducted    : ₹5000.00
+Bonus Added     : ₹2000.00
+Final Salary    : ₹47000.00
+18.Bank Loan Calculator: Calculate monthly payments for a loan based on principal, rate, and time.
+
+
+# Bank Loan Calculator
+
+# Input from user
+principal = float(input("Enter the loan amount (principal): ₹"))
+annual_rate = float(input("Enter the annual interest rate (in %): "))
+years = int(input("Enter the loan period (in years): "))
+
+# Convert annual rate to monthly rate and years to months
+monthly_rate = annual_rate / (12 * 100)
+months = years * 12
+
+# Monthly payment calculation using EMI formula
+# EMI = [P * R * (1+R)^N] / [(1+R)^N - 1]
+emi = (principal * monthly_rate * (1 + monthly_rate)**months) / ((1 + monthly_rate)**months - 1)
+
+# Output result
+print(f"\nMonthly EMI: ₹{emi:.2f}")
+
+     
+Enter the loan amount (principal): ₹250000
+Enter the annual interest rate (in %): 2
+Enter the loan period (in years): 4
+
+Monthly EMI: ₹5423.78
+19.Simple Encryption and Decryption: Implement a basic Caesar cipher to encrypt and decrypt messages
+
+
+# Caesar Cipher - Simple Encryption and Decryption
+
+def encrypt(text, shift):
+    result = ""
+    for char in text:
+        if char.isalpha():
+            base = ord('A') if char.isupper() else ord('a')
+            result += chr((ord(char) - base + shift) % 26 + base)
+        else:
+            result += char
+    return result
+
+def decrypt(text, shift):
+    return encrypt(text, -shift)
+
+# User input
+message = input("Enter the message: ")
+shift = int(input("Enter the shift value: "))
+
+# Encrypt and Decrypt
+encrypted_message = encrypt(message, shift)
+decrypted_message = decrypt(encrypted_message, shift)
+
+# Output
+print("\n--- Caesar Cipher ---")
+print(f"Original Message : {message}")
+print(f"Encrypted Message: {encrypted_message}")
+print(f"Decrypted Message: {decrypted_message}")
+
+     
+Enter the message: hello world
+Enter the shift value: 5
+
+--- Caesar Cipher ---
+Original Message : hello world
+Encrypted Message: mjqqt btwqi
+Decrypted Message: hello world
+20.Movie Ticket Booking System: Write a program to book movie tickets by selecting movie, time, and number of seats. Prints the tickets with price
+
+
+# Movie Ticket Booking System
+
+# Available movies and showtimes
+movies = {
+    "1": {"name": "Avengers: Endgame", "times": ["10:00 AM", "1:00 PM", "6:00 PM"]},
+    "2": {"name": "Inception", "times": ["11:00 AM", "3:00 PM", "8:00 PM"]},
+    "3": {"name": "Interstellar", "times": ["9:00 AM", "12:00 PM", "5:00 PM"]}
+}
+
+ticket_price = 150  # per seat
+
+# Display movie options
+print("Available Movies:")
+for key, movie in movies.items():
+    print(f"{key}. {movie['name']}")
+
+# Get user input
+movie_choice = input("Select a movie (1/2/3): ")
+selected_movie = movies.get(movie_choice)
+
+if selected_movie:
+    print(f"\nAvailable showtimes for {selected_movie['name']}:")
+    for idx, time in enumerate(selected_movie["times"], start=1):
+        print(f"{idx}. {time}")
+
+    time_choice = int(input("Select a showtime (1/2/3): "))
+    num_seats = int(input("Enter number of seats: "))
+
+    if 1 <= time_choice <= len(selected_movie["times"]):
+        selected_time = selected_movie["times"][time_choice - 1]
+        total_price = ticket_price * num_seats
+
+        # Print ticket
+        print("\n--- Ticket ---")
+        print(f"Movie       : {selected_movie['name']}")
+        print(f"Showtime    : {selected_time}")
+        print(f"Seats       : {num_seats}")
+        print(f"Price/Seat  : ₹{ticket_price}")
+        print(f"Total Price : ₹{total_price}")
+        print("-------------------")
+    else:
+        print("Invalid showtime selection.")
+else:
+    print("Invalid movie selection.")
+     
+Available Movies:
+1. Avengers: Endgame
+2. Inception
+3. Interstellar
+Select a movie (1/2/3): 1
+
+Available showtimes for Avengers: Endgame:
+1. 10:00 AM
+2. 1:00 PM
+3. 6:00 PM
+Select a showtime (1/2/3): 3
+Enter number of seats: 2
+
+--- Ticket ---
+Movie       : Avengers: Endgame
+Showtime    : 6:00 PM
+Seats       : 2
+Price/Seat  : ₹150
+Total Price : ₹300
+-------------------
+21.BMI Calculator: Create a Python program that calculates the Body Mass Index (BMI) based on the user's height and weight. The BMI can be calculated using the following formula: The program should prompt the user to input their weight and height, calculate the BMI using the above formula, and then categorize the BMI according to standard ranges: Underweight: BMI < 18.5 Normal weight: 18.5 <= BMI < 24.9 Overweight: 25 <= BMI < 29.9 Obesity: BMI >= 30 The program should then display the BMI value along with the corresponding category
+
+
+# BMI Calculator
+
+# Get user input
+weight = float(input("Enter your weight in kilograms (kg): "))
+height = float(input("Enter your height in meters (m): "))
+
+# Calculate BMI
+bmi = weight / (height ** 2)
+
+# Determine the category
+if bmi < 18.5:
+    category = "Underweight"
+elif 18.5 <= bmi < 24.9:
+    category = "Normal weight"
+elif 25 <= bmi < 29.9:
+    category = "Overweight"
+else:
+    category = "Obesity"
+
+# Display the result
+print(f"\nYour BMI is: {bmi:.2f}")
+print(f"Category: {category}")
+
+     
+Enter your weight in kilograms (kg): 65
+Enter your height in meters (m): 1.75
+
+Your BMI is: 21.22
+Category: Normal weight
+22.Dice Rolling Simulator: Simulate rolling two dice and print the results
+
+
+import random
+
+# Simulate rolling two dice
+dice1 = random.randint(1, 6)
+dice2 = random.randint(1, 6)
+total = dice1 + dice2
+
+# Display the result
+print(f"🎲 Dice 1: {dice1}")
+print(f"🎲 Dice 2: {dice2}")
+print(f"🔢 Total: {total}")
+
+     
+🎲 Dice 1: 4
+🎲 Dice 2: 3
+🔢 Total: 7
+23.Email Parser: Validate if a given string is a valid email address. Extract the username and domain from an email address
+
+
+email = input("Enter your email address: ")
+
+# Check if '@' is present exactly once and '.' exists after it
+if email.count('@') == 1 and '.' in email.split('@')[1]:
+    username, domain = email.split('@')
+    print("\n✅ Valid Email Address!")
+    print(f"👤 Username: {username}")
+    print(f"🌐 Domain: {domain}")
+else:
+    print("\n❌ Invalid Email Address!")
+
+     
+Enter your email address: john123@gmail.com
+
+✅ Valid Email Address!
+👤 Username: john123
+🌐 Domain: gmail.com
+24.Ticket Fare Calculator: Create a Python program that calculates the fare for a journey based on the distance traveled and the type of passenger (adult, child, or senior). The program should prompt the user to input the distance traveled (in kilometers) and the type of passenger. Based on this input, the fare will be calculated using predefined rates for each type of passenger. For example: Adult: 
+3 per kilometer Senior: $4 per kilometer The program should apply the appropriate fare rate based on the passenger type and distance travelled, then display the total fare. Additionally, the program could provide a discount for seniors, if applicable
+
+
+ # Define fare rates
+fare_rates = {
+    'adult': 5,
+    'child': 3,
+    'senior': 4
+}
+
+# Input
+distance = float(input("Enter distance traveled (in km): "))
+passenger_type = input("Enter passenger type (adult/child/senior): ").lower()
+
+# Validate passenger type
+if passenger_type in fare_rates:
+    rate = fare_rates[passenger_type]
+    total_fare = rate * distance
+
+    # Optional discount for seniors
+    if passenger_type == 'senior':
+        discount = 0.10  # 10% discount
+        total_fare -= total_fare * discount
+
+    # Output result
+    print(f"\nPassenger Type: {passenger_type.capitalize()}")
+    print(f"Distance: {distance} km")
+    print(f"Total Fare: ${total_fare:.2f}")
+else:
+    print("\n❌ Invalid passenger type. Please enter 'adult', 'child', or 'senior'.")
+
+     
+Enter distance traveled (in km): 650
+Enter passenger type (adult/child/senior): adult
+
+Passenger Type: Adult
+Distance: 650.0 km
+Total Fare: $3250.00
+25.Digital Dice Game: Create a Python program that simulates rolling a digital dice. The program should allow the user to roll the dice, and based on the outcome, track the number of wins and losses. For example: A win is recorded if the dice roll matches a pre-determined "winning number" (for example, 6). 1. 2.A loss is recorded if the dice roll is any other number. The program should continue asking the user if they want to roll again, and it should keep track of the total wins and losses. After the user decides to stop, the program should display the final score, showing the number of wins and losses
+
+
+import random
+
+# Initialize counters
+wins = 0
+losses = 0
+winning_number = 6
+
+print("🎲 Welcome to the Digital Dice Game!")
+print("Win if you roll a 6.\n")
+
+while True:
+    choice = input("Do you want to roll the dice? (yes/no): ").lower()
+
+    if choice == 'yes':
+        roll = random.randint(1, 6)
+        print(f"👉 You rolled: {roll}")
+
+        if roll == winning_number:
+            print("🎉 You Win!")
+            wins += 1
+        else:
+            print("😞 You Lose.")
+            losses += 1
+    elif choice == 'no':
+        break
+    else:
+        print("❗ Please enter 'yes' or 'no'.")
+
+# Final score
+print("\n📊 Final Score:")
+print(f"✅ Wins: {wins}")
+print(f"❌ Losses: {losses}")
+print("Thanks for playing! 🎉")
+
+     
+🎲 Welcome to the Digital Dice Game!
+Win if you roll a 6.
+
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 1
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 2
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 1
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 4
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 1
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 1
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 2
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 2
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 4
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 2
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 2
+😞 You Lose.
+Do you want to roll the dice? (yes/no): yes
+👉 You rolled: 6
+🎉 You Win!
+Do you want to roll the dice? (yes/no): no
+
+📊 Final Score:
+✅ Wins: 1
+❌ Losses: 11
+Thanks for playing! 🎉
+26.Shopping Discount System: Apply Different Discount Percentages Based on Purchase Amount Create a Python program that applies different discount percentages based on the total purchase amount. The program should prompt the user for the total purchase amount and then apply the following discount rules: 1.Purchase amount < 
+50 and 
+100 and 
+200: 20% discount. The program should calculate the discount based on the total and display the final amount after applying the discount
+
+
+# Get the total purchase amount
+amount = float(input("Enter the total purchase amount ($): "))
+
+# Determine discount percentage
+if amount < 50:
+    discount_percent = 0
+elif amount <= 100:
+    discount_percent = 10
+elif amount <= 200:
+    discount_percent = 15
+else:
+    discount_percent = 20
+
+# Calculate discount and final amount
+discount = (discount_percent / 100) * amount
+final_amount = amount - discount
+
+# Display the result
+print(f"\nPurchase Amount: ${amount:.2f}")
+print(f"Discount Applied: {discount_percent}%")
+print(f"Discount Amount: ${discount:.2f}")
+print(f"Final Amount to Pay: ${final_amount:.2f}")
+
+     
+Enter the total purchase amount ($): 475
+
+Purchase Amount: $475.00
+Discount Applied: 20%
+Discount Amount: $95.00
+Final Amount to Pay: $380.00
+27.Generate a Simple Invoice for a Customer Based on Items Purchased, Quantities, and Prices Create a Python program that generates a simple invoice for a customer. The program should allow the user to input the name, price, and quantity of items purchased. It should then calculate the total cost for each item (price × quantity), display the itemized list, and include a final total for the invoice. If applicable, it should apply the discount from the previous section to the total cost and display the final amount. Here's a possible structure for the invoice: 1.Item name 2.Item price 3.Item quantity 4.Total for that item 5.Subtotal of all items 6.Discount applied (if any) 7.Final amount to be paid
+
+
+# List to store item details
+items = []
+
+# Take user input for items
+while True:
+    name = input("\nEnter item name (or 'done' to finish): ")
+    if name.lower() == 'done':
+        break
+    price = float(input("Enter price of the item ($): "))
+    quantity = int(input("Enter quantity: "))
+
+    total = price * quantity
+    items.append({'name': name, 'price': price, 'quantity': quantity, 'total': total})
+
+# Calculate subtotal
+subtotal = sum(item['total'] for item in items)
+
+# Apply discount
+if subtotal < 50:
+    discount_percent = 0
+elif subtotal <= 100:
+    discount_percent = 10
+elif subtotal <= 200:
+    discount_percent = 15
+else:
+    discount_percent = 20
+
+discount = (discount_percent / 100) * subtotal
+final_total = subtotal - discount
+
+# Display the invoice
+print("\n🧾 Invoice")
+print("-" * 40)
+print(f"{'Item':<15}{'Price':<10}{'Qty':<5}{'Total':<10}")
+print("-" * 40)
+for item in items:
+    print(f"{item['name']:<15}${item['price']:<10.2f}{item['quantity']:<5}${item['total']:<.2f}")
+print("-" * 40)
+print(f"{'Subtotal':<30} ${subtotal:.2f}")
+print(f"Discount ({discount_percent}%){'':<17} -${discount:.2f}")
+print(f"{'Final Amount':<30} ${final_total:.2f}")
+print("-" * 40)
+print("✅ Thank you for shopping!")
+
+     
+Enter item name (or 'done' to finish): soft drink
+Enter price of the item ($): 20
+Enter quantity: 1
+
+Enter item name (or 'done' to finish): done
+
+🧾 Invoice
+----------------------------------------
+Item           Price     Qty  Total     
+----------------------------------------
+soft drink     $20.00     1    $20.00
+----------------------------------------
+Subtotal                       $20.00
+Discount (0%)                  -$0.00
+Final Amount                   $20.00
+----------------------------------------
+✅ Thank you for shopping!
+
+
+     
