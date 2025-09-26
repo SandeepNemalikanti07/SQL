@@ -1,0 +1,244 @@
+select * from emp_id;
+
+select count(*) as total_records from emp_id;
+
+SELECT 
+    first_name,
+    salary,
+    IF(salary < 50000, 'Eligible for Raise', 'Not Eligible') AS raise_eligibility
+FROM emp_id;
+
+SELECT 
+    first_name,
+    joining_date,
+    IF(joining_date < '2022-01-01', 'Experienced', 'New Hire') AS employment_status
+FROM emp_id;
+
+SELECT 
+    first_name,
+    salary,
+    IF(salary > 60000, salary * 0.10, 
+       IF(salary BETWEEN 50000 AND 60000, salary * 0.07, salary * 0.05)
+    ) AS bonus_amount
+FROM emp_id;
+
+SELECT 
+    first_name,
+    salary,
+    CASE 
+        WHEN salary > 60000 THEN 'Senior'
+        WHEN salary BETWEEN 50000 AND 60000 THEN 'Mid-Level'
+        ELSE 'Junior'
+    END AS seniority_level
+FROM emp_id;
+SELECT 
+    first_name,
+    salary,
+    CASE 
+        WHEN salary > 60000 THEN 'Senior'
+        WHEN salary BETWEEN 50000 AND 60000 THEN 'Mid-Level'
+        ELSE 'Junior'
+    END AS seniority_level
+FROM emp_id;
+
+SELECT 
+    first_name,
+    department,
+    CASE 
+        WHEN department = 'IT' AND salary > 55000 THEN 'Senior IT Employee'
+        ELSE 'Other'
+    END AS job_level
+FROM emp_id;
+
+SELECT 
+    first_name,
+    joining_date,
+    CASE 
+        WHEN joining_date > '2024-01-01' THEN 'Recent Joiner'
+        ELSE 'Long-Term Employee'
+    END AS recent_joiner_status
+FROM emp_id;
+
+SELECT 
+    first_name,
+    joining_date,
+    CASE 
+        WHEN joining_date < '2021-01-01' THEN '10 Days Leave'
+        WHEN joining_date BETWEEN '2021-01-01' AND '2023-01-01' THEN '20 Days Leave'
+        ELSE '25 Days Leave'
+    END AS leave_entitlement
+FROM emp_id;
+
+SELECT 
+    first_name,
+    salary,
+    department,
+    CASE 
+        WHEN salary > 60000 AND department = 'IT' THEN 'Promotion Eligible'
+        ELSE 'Not Eligible'
+    END AS promotion_eligibility
+FROM emp_id;
+
+SELECT 
+    first_name,
+    salary,
+    CASE 
+        WHEN salary < 50000 THEN 'Eligible for Overtime Pay'
+        ELSE 'Not Eligible'
+    END AS overtime_pay_eligibility
+FROM emp_id;
+
+SELECT 
+    first_name,
+    department,
+    salary,
+    CASE 
+        WHEN department = 'HR' AND salary > 60000 THEN 'HR Executive'
+        WHEN department = 'Finance' AND salary > 60000 THEN 'Finance Manager'
+        ELSE 'Other'
+    END AS job_title
+FROM emp_id;
+
+SELECT 
+    first_name,
+    salary,
+    CASE 
+        WHEN salary > (SELECT AVG(salary) FROM emp_id) THEN 'Above Average'
+        ELSE 'Below Average'
+    END AS salary_comparison
+FROM emp_id;
+
+SELECT 
+    department, 
+    SUM(salary) AS total_salary
+FROM emp_id
+GROUP BY department
+ORDER BY total_salary ASC;
+
+SELECT 
+    department, 
+    SUM(salary) AS total_salary
+FROM emp_id
+GROUP BY department
+ORDER BY total_salary DESC;
+
+SELECT 
+    project_name, 
+    COUNT(employee_id) AS emp_count
+FROM emp_id
+GROUP BY project_name
+HAVING COUNT(employee_id) > 1;
+
+SELECT 
+    department,
+    COUNT(department) AS total_employees,
+    SUM(salary) AS total_salary
+FROM emp_id 
+GROUP BY department;
+
+SELECT 
+    department,
+    AVG(salary) AS average_salary,
+    MAX(salary) AS max_salary
+FROM emp_id
+GROUP BY department
+ORDER BY average_salary ASC; 
+
+SELECT 
+    department,
+    COUNT(*) AS employee_count,
+    CASE 
+        WHEN COUNT(*) > 5 THEN 'Large'
+        WHEN COUNT(*) BETWEEN 3 AND 5 THEN 'Medium'
+        ELSE 'Small'
+    END AS department_size
+FROM emp_id
+GROUP BY department;
+
+SELECT 
+    department,
+    AVG(salary) AS avg_salary,
+    CASE 
+        WHEN AVG(salary) > 60000 THEN 'High Pay'
+        WHEN AVG(salary) BETWEEN 50000 AND 60000 THEN 'Medium Pay'
+        ELSE 'Low Pay'
+    END AS pay_level
+FROM emp_id
+GROUP BY department;
+
+SELECT 
+    department,
+    gender,
+    COUNT(*) AS total_employees
+FROM emp_id
+GROUP BY department, gender
+ORDER BY department, gender;
+
+SELECT 
+    YEAR(joining_date) AS joining_year,
+    COUNT(*) AS total_hires,
+    CASE
+        WHEN COUNT(*) > 5 THEN 'High Hiring'
+        WHEN COUNT(*) BETWEEN 3 AND 5 THEN 'Moderate Hiring'
+        ELSE 'Low Hiring'
+    END AS hiring_trend
+FROM emp_id
+GROUP BY YEAR(joining_date)
+ORDER BY joining_year;
+
+SELECT 
+    department,
+    MAX(salary) AS highest_salary,
+    CASE
+        WHEN MAX(salary) > 70000 THEN 'Senior Leadership'
+        ELSE 'Mid-Level'
+    END AS role_classification
+FROM emp_id
+GROUP BY department
+ORDER BY highest_salary DESC;
+
+SELECT 
+    department,
+    COUNT(*) AS high_salary_count,
+    CASE
+        WHEN COUNT(*) > 2 THEN 'High-Paying Team'
+        ELSE 'Normal Team'
+    END AS team_category
+FROM emp_id
+WHERE salary > 60000
+GROUP BY department
+ORDER BY high_salary_count DESC;
+
+SELECT 
+    first_name,
+    YEAR(joining_date) AS joining_year,
+    MONTH(joining_date) AS joining_month,
+    DAY(joining_date) AS joining_day,
+    CURDATE() AS `current_date`
+FROM emp_id;
+
+SELECT 
+    first_name,
+    joining_date,
+    CURDATE() AS `current_date`,
+    TIMESTAMPDIFF(MONTH, joining_date, CURDATE()) AS diff_in_months,
+    TIMESTAMPDIFF(DAY, joining_date, CURDATE()) AS diff_in_days
+FROM emp_id;
+
+SELECT *
+FROM emp_id
+WHERE YEAR(joining_date) = 2020;
+
+SELECT *
+FROM emp_id
+WHERE MONTH(joining_date) = 2;
+
+SELECT *
+FROM emp_id
+WHERE joining_date BETWEEN '2021-01-01' AND '2021-12-01';
+
+SELECT e.first_name, p.project_name
+FROM emp_id e
+JOIN ProjectDetail p
+  ON e.employee_id = p.employee_id
+ORDER BY e.first_name;
