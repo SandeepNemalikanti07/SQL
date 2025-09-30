@@ -1,0 +1,1025 @@
+select * from tbl_emp_detail_data;
+
+select * from tbl_department_heads;
+
+select t.dept_name,sum(c.salary) as total_salary,
+rank() over(order by sum(c.salary) desc) as salary_rank
+from tbl_department_heads t
+left join tbl_emp_detail_data c  on t.dept_name=c.department
+group by t.dept_name
+order by total_salary desc;
+
+select * from tbl_project_deatils;
+
+select count(distinct(k.project_name)) as total_projects,f.emp_id,k.emp_id_no,f.first_name
+from tbl_emp_detail_data f
+left join tbl_project_deatils k
+on f.emp_id=k.emp_id_no
+group by f.first_name,f.emp_id
+having count(distinct(k.project_name))>1;
+
+select f.emp_id_no,count(distinct(f.project_name))as total_projects,k.emp_id,sum(salary) as total_salary,f.status from tbl_project_deatils f
+left join tbl_emp_detail_data k on f.emp_id_no=k.emp_id
+where status='ongoing'
+group by f.project_name,f.emp_id_no
+order by total_salary desc;
+
+select 
+e.department,e.first_name,e.emp_id,f.dept_name,f.dept_head_id,f.dept_head_name,e.joining_date
+from (
+select 
+emp_id,first_name,department,joining_date,
+row_number() over(
+partition by department
+order by joining_date asc 
+) as rn 
+from tbl_emp_detail_data
+)e
+join tbl_department_heads f
+on e.department=f.dept_name
+where e.rn=1;
+
+select 
+e.department,e.first_name,e.emp_id,f.dept_name,f.dept_head_id,f.dept_head_name,e.joining_date
+from (
+select 
+emp_id,first_name,department,joining_date,
+row_number() over(
+partition by department
+order by joining_date asc 
+) as rn 
+from tbl_emp_detail_data
+)e
+join tbl_department_heads f
+on e.department=f.dept_name
+where e.rn=1;
+
+select * from tbl_bonus;
+
+select e.emp_id,e.first_name,e.department,e.salary
+from tbl_emp_detail_data e
+join (
+select department,avg(salary) as avg_salary
+from tbl_emp_detail_data
+group  by department
+) f
+on e.department=f.department
+where 
+e.salary>f.avg_salary
+order by e.department,e.salary desc;
+select * from tbl_bonus;
+
+select e.emp_id,e.first_name,e.department,e.salary
+from tbl_emp_detail_data e
+join (
+select department,avg(salary) as avg_salary
+from tbl_emp_detail_data
+group  by department
+) f
+on e.department=f.department
+where 
+e.salary>f.avg_salary
+order by e.department,e.salary desc;
+select * from tbl_bonus;
+
+select e.emp_id,e.first_name,e.department,count(distinct(f.project_id)) as unique_id,avg(datediff(f.start_date,f.end_date)) as avg_diff
+from tbl_emp_detail_data e
+join tbl_project_deatils f
+on e.emp_id=f.emp_id_no
+join(
+select avg(datediff(start_date,end_date)) as avg_fixx,emp_id_no
+from tbl_project_deatils 
+group by emp_id_no
+) d
+on e.emp_id=d.emp_id_no
+group by e.emp_id,e.first_name,e.department
+order by avg_diff desc,d.avg_fixx;
+
+select 
+emp_id,
+department,
+total_bonus,
+rank() over (partition by department order by total_bonus desc) as emp_rank
+from (
+select 
+e.emp_id,
+e.department,
+sum(b.bonus_amount)as total_bonus
+from tbl_emp_detail_data e join tbl_bonus b 
+ on e.emp_id=b.emp_id
+ group by e.emp_id,e.department
+ ) jumaji;
+#10 
+SELECT 
+    emp_id,
+    department,
+    total_experience,
+    RANK() OVER(PARTITION BY department ORDER BY total_experience DESC) AS rank_dep
+FROM (
+    SELECT 
+        e.emp_id,
+        e.department,
+        COUNT(p.project_name) AS project_count,
+        SUM(DATEDIFF(p.end_date, p.start_date)) / 365 AS total_experience
+    FROM tbl_emp_detail_data e
+    JOIN (
+        SELECT * FROM tbl_project_deatils
+        WHERE status = 'completed'
+    ) p ON e.emp_id = p.emp_id_no
+    GROUP BY e.emp_id, e.department
+) ra;
+
+#10
+with emp_experience as (
+select 
+e.emp_id,
+e.department,
+count(p.project_name) as total_project,
+sum(datediff(p.end_date,p.start_date)/365) as total_experience
+from tbl_emp_detail_data e 
+join 
+(
+select * from tbl_project_deatils 
+where status='completed')
+p 
+on e.emp_id=p.emp_id_no
+group by e.emp_id,e.department
+),
+dept_avg as (
+select department,
+avg(total_experience) as avg_experience,
+rank() over ( order by avg(total_experience)) as dept_rank 
+from emp_experience e
+group by department
+) 
+select 
+ee.emp_id,
+ee.department,
+ee.total_experience,
+ee.total_project,
+rank() over(partition by ee.department order by ee.total_experience desc) as rank_emp_by_rank,
+rank() over(partition by ee.department order by ee.total_project desc) as rank_by_project,
+da.avg_experience,
+da.dept_rank 
+from emp_experience ee
+join dept_avg da 
+on ee.department=da.department 
+order by ee.department,da.dept_rank,rank_emp_by_rank;
+
+#1
+with emp_project_details as (
+select 
+e.emp_id,
+e.department,
+e.first_name,
+p.project_id,
+p.project_name,
+p.start_date,
+p.end_date
+from tbl_emp_detail_data e join tbl_project_deatils p 
+on e.emp_id=p.emp_id_no
+
+)
+select 
+* from emp_project_details 
+order by department, emp_id, project_name;
+
+with emp_project_details as (
+select 
+e.emp_id,
+e.department,
+e.first_name,
+count(p.project_name) as total_projects
+from tbl_emp_detail_data e join tbl_project_deatils p 
+on e.emp_id=p.emp_id_no
+group by e.emp_id,e.department,e.first_name
+
+)
+select 
+* from emp_project_details 
+order by department, emp_id;
+
+
+with  avg_salry_greater_than_salary as (
+select 
+department,
+avg(salary) as avg_salary
+from tbl_emp_detail_data 
+group by department
+)
+select 
+e.emp_id,
+e.first_name,
+e.department
+from tbl_emp_detail_data e join 
+avg_salry_greater_than_salary d 
+on e.department=d.department
+where salary>avg_salary 
+order by d.avg_salary desc;
+
+with emp_join as 
+(
+select 
+e.emp_id,e.department,e.joining_date,p.emp_id_no,p.project_name,p.project_id,p.start_date,p.end_date
+from tbl_emp_detail_data e 
+join tbl_project_deatils p 
+on e.emp_id=p.emp_id_no
+order  by e.emp_id,p.project_name
+)
+select 
+project_name,emp_id_no,start_date,end_date
+from emp_join
+where 
+joining_date >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
+order by emp_id,project_name;
+
+with salary_statistics as (
+select 
+department,
+avg(salary) as avg_salary
+from tbl_emp_detail_data
+group by department
+),
+sum_salary as 
+(
+select 
+department,
+sum(salary) as sum_salary 
+from tbl_emp_detail_data
+group by department
+),
+max_salary as
+(
+select 
+department,
+max(salary) as max_salary
+from tbl_emp_detail_data
+group by department
+)
+select 
+distinct e.department ,av.avg_salary,su.sum_salary,ma.max_salary
+from tbl_emp_detail_data e join salary_statistics av
+on e.department=av.department join sum_salary su 
+on av.department=su.department join max_salary ma
+on su.department=ma.department 
+order by
+ av.avg_salary,su.sum_salary,ma.max_salary desc;
+
+with max_salary as (
+select 
+emp_id,department,salary ,
+row_number() over (order by salary desc) as max_salary
+from tbl_emp_detail_data
+)
+select 
+e.emp_id,ma.max_salary,e.salary
+from tbl_emp_detail_data e join max_salary ma
+on e.emp_id=ma.emp_id
+order by ma.max_salary limit 5;
+
+with highest_tenture as (
+select 
+department,
+max(timestampdiff(YEAR,str_to_date(joining_date,"%Y-%M-%D"),curdate())) as tenture_years
+from tbl_emp_detail_data
+group by department
+)
+select 
+e.department,e.emp_id,e.joining_date,t.tenture_years 
+from tbl_emp_detail_data e join highest_tenture t
+on e.department=t.department 
+where timestampdiff(YEAR,str_to_date(joining_date,"%Y-%M-%d"),curdate())=t.tenture_years 
+order by tenture_years;
+
+WITH highest_tenure AS (
+    SELECT 
+        department,
+        MAX(TIMESTAMPDIFF(YEAR, str_to_date(joining_date,"%Y-%M-%D"), CURDATE())) AS tenure_years
+    FROM tbl_emp_detail_data
+    GROUP BY department
+)
+SELECT 
+    e.emp_id,e.department,e.joining_date,
+    TIMESTAMPDIFF(YEAR, str_to_date(e.joining_date,"%Y-%M-%d"), CURDATE()) AS tenure_years
+FROM tbl_emp_detail_data e
+JOIN highest_tenure t
+  ON e.department = t.department
+ AND TIMESTAMPDIFF(YEAR, str_to_date(e.joining_date,"%Y-%M-%d"), CURDATE()) = t.tenure_years
+ORDER BY tenure_years DESC;
+
+with dept_change as 
+(
+select department,
+count(*) as emp_count
+from tbl_emp_detail_data
+group by department
+)
+select department,emp_count,
+case
+when emp_count <3 then "small"
+when emp_count between 3 and 6 then "medium"
+else "large"
+end as greater_count
+from dept_change
+order by emp_count;
+
+with second_highest_employee as (
+select department,salary,
+rank() OVER (partition by department order by  salary DESC) AS rnk
+from tbl_emp_detail_data
+)
+select department,salary,rnk
+from second_highest_employee 
+where rnk =2
+order by department;
+
+WITH second_highest_employee AS (
+    SELECT
+        emp_id,
+        department,
+        salary,
+        RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rnk
+    FROM tbl_emp_detail_data
+)
+SELECT 
+    emp_id,department,salary
+FROM second_highest_employee
+WHERE rnk = 2
+ORDER BY department;
+#advanced cte 
+with emp_dept  as 
+(
+select e.emp_id,e.department,(e.salary+b.bonus_amount) as total_bonus
+from tbl_emp_detail_data e join tbl_bonus b 
+on e.emp_id=b.emp_id
+),
+dept_total as
+(
+select 
+department,
+sum(total_bonus) as full_bonus 
+from 
+emp_dept 
+group by department 
+having sum(total_bonus) < 300000
+),
+rank_emp as
+(
+select 
+ee.department,
+ee.emp_id,
+da.full_bonus,
+rank() over(partition by ee.department order by da.full_bonus)
+from  emp_dept ee join dept_total da
+on ee.department=da.department 
+)
+select * from rank_emp
+order by department,full_bonus;
+
+#2 
+WITH average_experience AS 
+(
+    SELECT 
+        e.emp_id,
+        e.department,
+        TIMESTAMPDIFF(YEAR, e.joining_date, CURDATE()) AS avg_experience,
+        COUNT(p.project_id) AS total_project
+    FROM tbl_emp_detail_data e 
+    JOIN tbl_project_deatils p 
+        ON e.emp_id = p.emp_id_no
+    GROUP BY e.emp_id, e.department, e.joining_date
+),
+avg_exp AS 
+(
+    SELECT 
+        emp_id,
+        department,
+        total_project,
+        AVG(avg_experience) AS evg_experience
+    FROM average_experience
+    GROUP BY department, emp_id, total_project
+),
+rank_emp AS 
+(
+    SELECT 
+        department,
+        emp_id,
+        evg_experience,
+        total_project,
+        RANK() OVER(PARTITION BY department ORDER BY evg_experience DESC) AS rank_experience
+    FROM avg_exp
+)
+SELECT  
+    rank_experience,
+    evg_experience,
+    emp_id,
+    department,
+    total_project
+FROM rank_emp
+ORDER BY department, rank_experience;
+
+ 
+ #4
+ WITH avg_duration AS (
+    SELECT 
+        e.department,
+        COUNT(DISTINCT e.emp_id) AS total_employees,
+        COUNT(*) AS total_projects,
+        AVG(DATEDIFF(p.end_date, p.start_date)) AS avg_duration_days
+    FROM tbl_emp_detail_data e 
+    JOIN (
+        SELECT emp_id_no, start_date, end_date, status
+        FROM tbl_project_deatils 
+        WHERE status = 'completed'
+    ) p 
+        ON e.emp_id = p.emp_id_no
+    GROUP BY e.department
+),
+project_duration AS (
+    SELECT 
+        e.emp_id,
+        e.department,
+        p.start_date,
+        p.end_date,
+        DATEDIFF(p.end_date, p.start_date) AS total_days
+    FROM tbl_emp_detail_data e
+    JOIN tbl_project_deatils p
+        ON e.emp_id = p.emp_id_no
+    WHERE p.status = 'completed'
+)
+SELECT *
+FROM avg_duration a
+JOIN project_duration pd
+    ON a.department = pd.department;
+
+#4
+with duration_project as 
+(
+select e.emp_id,e.department,
+count(*) as total_projects,
+avg(datediff(p.end_date,p.start_date)) as avg_duration 
+from tbl_emp_detail_data e 
+join 
+(
+select emp_id_no,start_date,end_date,
+status
+from tbl_project_deatils 
+where status="completed"
+) p 
+ on e.emp_id=p.emp_id_no
+group by e.department,e.emp_id
+),
+rank_emp as 
+(
+select emp_id,department,avg_duration,total_projects,
+rank() over(partition by department order by total_projects) as rnk_department
+from duration_project 
+group by department,emp_id
+)
+select emp_id,department,rnk_department,avg_duration,total_projects
+from rank_emp
+where rnk_department=2
+order by avg_duration,total_projects;
+
+#
+with duration_project as 
+(
+select e.emp_id,e.department,
+count(*) as total_projects,
+avg(datediff(p.end_date,p.start_date)) as avg_duration 
+from tbl_emp_detail_data e 
+join 
+(
+select emp_id_no,start_date,end_date,
+status
+from tbl_project_deatils 
+where status="completed"
+) p 
+ on e.emp_id=p.emp_id_no
+group by e.department,e.emp_id
+),
+dept_total as 
+(
+select
+department,
+AVG(avg_duration) AS dept_avg_duration
+from duration_project
+group by department
+order by dept_avg_duration  desc limit 2
+),
+ranked_emp AS (
+select e.emp_id,e.department,e.joining_date,
+rank() over(partition by e.department order by joining_date) as rnk_emp
+    from  tbl_emp_detail_data e
+    where  e.department IN (SELECT department FROM dept_total)
+)
+select rnk_emp,department,joining_date,emp_id
+from ranked_emp
+order by department,emp_id;
+#5
+with project_count as 
+(
+select e.emp_id,
+avg(e.salary) as total_salary,
+e.department,
+count(p.project_id) as total_projects
+from tbl_emp_detail_data e
+join 
+(
+select project_id,emp_id_no,
+status
+from tbl_project_deatils
+where status="completed") p 
+on e.emp_id=p.emp_id_no
+group by emp_id,department
+),
+dept_avg as
+(
+select emp_id,department,total_salary,total_projects
+from project_count
+where total_projects >1
+group by department,emp_id
+having total_salary >55000
+),
+rank_unit as  (
+select department,emp_id,total_salary,total_projects ,
+rank() over(partition by total_salary order by total_projects) as rnk_emp
+from dept_avg
+)
+select emp_id,department,total_salary,total_projects,rnk_emp 
+from rank_unit
+order by total_salary, total_projects;
+#6 
+with experience as (
+select 
+count(e.emp_id) as total_emp_count,e.department,
+sum(e.salary+b.bonus_amount) as compensation,
+avg(timestampdiff(YEAR,str_to_date(e.joining_date,"%Y-%M-%d"),curdate())) as total_experience
+from tbl_emp_detail_data e
+join tbl_bonus b 
+on e.emp_id=b.emp_id
+group by e.department
+),
+emp_count as
+(
+select compensation,total_experience,total_emp_count,department
+from experience
+where total_emp_count >5
+),
+rnk_emp as 
+(
+select compensation,total_experience,total_emp_count,department ,
+rank() over(partition by  compensation order by total_experience) as rnk_emp
+from emp_count
+)
+select compensation,total_experience,total_emp_count,department,rnk_emp
+from rnk_emp
+order by compensation,total_experience,total_emp_count;
+
+#7 
+with emp_info
+as (
+select e.emp_id,e.department,e.salary,
+count( distinct p.project_id) as total_projects
+from tbl_emp_detail_data e 
+join 
+(
+select emp_id_no,project_id,
+status
+from tbl_project_deatils
+where status="completed"
+) p 
+group by e.department,e.emp_id,e.salary
+),
+count_projects as 
+(
+select ee.emp_id,ee.department,ee.salary,ee.total_projects,d.dept_head_name
+from emp_info ee join tbl_department_heads d
+on ee.department= d.dept_name
+where total_projects >2
+),
+rank_emp as 
+(
+select emp_id,department,total_projects,dept_head_name,
+rank() over(partition by department  order by salary desc, total_projects desc) as rnk_empl
+from count_projects
+where  dept_head_name like "m%"
+)
+select emp_id,department,total_projects,dept_head_name,rnk_empl
+from rank_emp
+order by total_projects,rnk_empl;
+#8
+with project_count as (
+select e.emp_id,e.department,p.project_name,
+datediff(p.end_date,p.start_date) as avg_duration
+from tbl_emp_detail_data e join 
+(
+select emp_id_no,project_name,end_date,start_date,
+status
+from tbl_project_deatils 
+where status="completed"
+) p 
+),
+count_project as 
+(
+select 
+count(project_name) as total_projects ,emp_id,department,
+avg(avg_duration) as avg_duration
+from project_count 
+group by emp_id,department
+having count(project_name)>5
+),
+rank_emp as
+(
+select emp_id,department,avg_duration,total_projects,
+rank() over(order by total_projects desc,avg_duration desc) as rnk_emp
+from count_project
+)
+select emp_id,department,avg_duration,total_projects,rnk_emp
+from rank_emp
+order  by avg_duration,total_projects,rnk_emp;
+
+#8 
+WITH emp_info AS (
+    SELECT 
+        e.emp_id,
+        e.department,
+        p.project_name,
+        DATEDIFF(p.end_date, p.start_date) AS duration
+    FROM tbl_emp_detail_data e
+    JOIN (
+        SELECT emp_id_no, project_name, start_date, end_date
+        FROM tbl_project_deatils
+        WHERE status = 'completed'
+    ) p ON e.emp_id = p.emp_id_no
+),
+avg_duration AS (
+    SELECT 
+        emp_id,
+        department,
+        COUNT(project_name) AS total_projects,
+        AVG(duration) AS avg_duration
+    FROM emp_info
+    GROUP BY emp_id, department
+    HAVING COUNT(project_name) > 5
+),
+rank_dept AS (
+    SELECT 
+        emp_id,
+        department,
+        total_projects,
+        avg_duration,
+        RANK() OVER (PARTITION BY department ORDER BY total_projects DESC) AS rnk_projects
+    FROM avg_duration
+),
+emp_summary AS (
+    SELECT 
+        emp_id,
+        department,
+        COUNT(project_name) AS total_projects,
+        AVG(duration) AS avg_duration
+    FROM emp_info
+    GROUP BY emp_id, department
+),
+rnk_duration AS (
+    SELECT 
+        emp_id,
+        department,
+        total_projects,
+        avg_duration,
+        RANK() OVER (PARTITION BY department ORDER BY avg_duration DESC) AS rnk_duration
+    FROM emp_summary
+)
+SELECT 
+    d.emp_id,
+    d.department,
+    d.total_projects,
+    d.avg_duration,
+    d.rnk_projects,
+    u.rnk_duration
+FROM rank_dept d
+JOIN rnk_duration u 
+    ON d.emp_id = u.emp_id  -- ✅ match employees, not just department
+   AND d.department = u.department
+ORDER BY 
+    d.department,
+    d.rnk_projects,
+    u.rnk_duration;
+
+#9 
+WITH emp_info AS (
+    SELECT 
+        e.emp_id,
+        e.department,
+        e.salary,
+        AVG(b.bonus_amount) AS avg_bonus,
+        SUM(b.bonus_amount) AS total_bonus
+    FROM tbl_emp_detail_data e
+    JOIN tbl_bonus b 
+        ON e.emp_id = b.emp_id
+    GROUP BY e.emp_id, e.department, e.salary
+),
+avg_bonus AS (
+    SELECT 
+        emp_id,
+        department,
+        salary,
+        avg_bonus,
+        total_bonus
+    FROM emp_info
+    WHERE salary > total_bonus   -- ✅ compare salary with total bonus
+),
+rnk_emp AS (
+    SELECT 
+        emp_id,
+        department,
+        salary,
+        avg_bonus,
+        total_bonus,
+        RANK() OVER (ORDER BY total_bonus DESC) AS rnk_by_emp
+    FROM avg_bonus
+),
+rnk_dept AS (
+    SELECT 
+        emp_id,
+        department,
+        salary,
+        avg_bonus,
+        total_bonus,
+        RANK() OVER (PARTITION BY department ORDER BY total_bonus DESC) AS rnk_dept
+    FROM avg_bonus
+)
+SELECT 
+    rm.emp_id,
+    rm.department,
+    rm.salary,
+    rm.total_bonus,
+    rm.rnk_by_emp,
+    rd.rnk_dept
+FROM rnk_emp rm
+JOIN rnk_dept rd
+    ON rm.emp_id = rd.emp_id
+ORDER BY rm.total_bonus DESC, rm.rnk_by_emp, rd.rnk_dept;
+
+
+#10
+with concate_names as 
+(
+select 
+e.emp_id,
+concat(e.first_name,e.last_name)as full_name_emp,
+e.joining_date,
+case
+when bonus_amount is null then "null"
+else "bonus_recieved"
+end as bonus_status,
+e.department
+from tbl_emp_detail_data e 
+left join tbl_bonus b
+on e.emp_id=b.emp_id
+group by e.emp_id,e.joining_date,e.department,full_name_emp,bonus_status
+),
+experience as
+(
+select 
+emp_id,
+full_name_emp,
+timestampdiff(YEAR,STR_TO_DATE(joining_date, '%Y-%m-%d'),curdate()) as duration ,
+department,
+bonus_status
+from 
+concate_names
+),
+case_study as 
+(
+select 
+emp_id,
+department,
+duration,
+full_name_emp,
+bonus_status,
+case
+when duration < 2 then "junior"
+when duration   between 2 and 4 then "mid-level"
+else 
+"senior"
+end as seniority 
+from experience
+)
+select emp_id,department,duration,full_name_emp,seniority,bonus_status
+from case_study
+order by duration,full_name_emp,seniority;
+#11
+with department_analysis as
+(
+select 
+count(emp_id) as emp_department,
+department,
+sum(salary) as total_salary 
+from tbl_emp_detail_data
+group  by department
+),
+bonus_category as 
+(
+select d.department ,
+sum(b.bonus_Amount) as total_bonus,
+count(b.emp_id) as emp_binus_count
+from tbl_emp_detail_data d
+left join tbl_bonus b  on d.emp_id =b.emp_id
+group by d.department
+)
+select dd.department,bb.total_bonus,bb.emp_binus_count,dd.emp_department,dd.total_salary
+from bonus_category bb join department_analysis dd
+on bb.department=dd.department 
+order by bb.total_bonus,bb.emp_binus_count,dd.emp_department,dd.total_salary;
+
+with emp_project_details as 
+(
+select e.emp_id,e.department,p.project_name,p.project_id,
+p.status
+from tbl_emp_detail_data e
+join tbl_project_deatils p 
+on e.emp_id=p.emp_id_no
+),
+status_check as 
+(
+select emp_id_no ,project_name,
+case 
+when status="completed" then  "done"
+when status="ongoing" then "inprogress"
+else "unknown"
+end as status_check
+from tbl_project_deatils
+)
+select 
+distinct(ee.emp_id),pp.project_name,pp.status_check 
+from emp_project_details ee
+join status_check pp 
+on ee.emp_id=pp.emp_id_no
+order by status_check;
+#4
+with total_salary as 
+(
+select department,
+avg(salary) as total_salary
+from tbl_emp_detail_data
+group by department
+)
+
+select e.emp_id,d.department,e.salary,
+case 
+when salary > total_salary then "above_average"
+when salary < total_salary then "below-average"
+else "equal"
+end as avg_dept_salary
+from tbl_emp_detail_data e join total_salary d
+on e.department=d.department 
+order by avg_dept_salary desc;
+#5
+with concat_operation as 
+(
+select 
+emp_id,
+concat(first_name,"",last_name)as full_name ,joining_date 
+from tbl_emp_detail_data
+),
+alphabet_no as
+(
+select 
+rtrim(upper(full_name)) as first_name,
+ltrim(lower(full_name)) as converted_name,
+month(joining_date) as month_of_date 
+from concat_operation
+)
+select first_name,converted_name,month_of_date 
+from alphabet_no;
+
+SELECT 
+        CONCAT(
+            UPPER(LEFT(first_name, 1)), 
+            LOWER(SUBSTRING(first_name, 2))
+        ) AS formatted_first_name,
+        
+        CONCAT(
+            UPPER(LEFT(last_name, 1)), 
+            LOWER(SUBSTRING(last_name, 2))
+        ) AS formatted_last_name,
+        
+        CONCAT(
+            CONCAT(UPPER(LEFT(first_name, 1)), LOWER(SUBSTRING(first_name, 2))),
+            ' ',
+            CONCAT(UPPER(LEFT(last_name, 1)), LOWER(SUBSTRING(last_name, 2)))
+        ) AS full_name_proper,
+        
+        DATE_FORMAT(joining_date, '%M') AS joining_month -- full month name
+        
+    FROM tbl_emp_detail_data;
+    
+    
+#6
+select * from tbl_department_heads;
+select 
+count(emp_id) as total_employee,
+e.department,d.dept_name,d.dept_head_name
+from tbl_emp_detail_data e join tbl_department_heads d 
+on e.department=d.dept_name
+where dept_head_name like "m%"
+group by e.department,d.dept_name,d.dept_head_name
+order by total_employee;
+#7 
+select 
+count(emp_id) as total_members,
+department,
+avg(timestampdiff(YEAR,STR_TO_DATE(joining_date, '%Y-%m-%d'),curdate()))as duration
+from tbl_emp_detail_data
+group by department 
+order by total_members,duration;
+
+#8 
+with compensation as 
+(
+select 
+e.emp_id,
+sum(b.bonus_amount+e.salary) as total_salary,
+e.department
+from tbl_emp_detail_data e left join tbl_bonus b 
+on e.emp_id=b.emp_id
+group by e.emp_id,e.department
+)
+select emp_id,total_salary,department,
+rank() over(partition by department order by total_salary desc) 
+from compensation
+order by total_salary desc;
+#9
+select 
+e.emp_id,
+count(p.project_id) as total_projects ,
+e.department,e.first_name
+from tbl_emp_detail_data e join tbl_project_deatils p 
+on e.emp_id=p.emp_id_no
+group by e.department,e.emp_id,e.first_name
+having count(p.project_id)>1
+order by total_projects;
+
+#10
+select emp_id,department,salary,
+case 
+when salary < 50000 then salary*1.10
+when salary between 50000 and 70000 then salary*1.07
+else salary*0.05
+end as increment 
+from tbl_emp_detail_data;
+
+#1
+create view vw_employee_department_info as
+select e.emp_id,e.department,d.dept_head_name,
+concat(e.first_name,"",e.last_name) as full_name
+from tbl_emp_detail_data e join tbl_department_heads
+d on e.department=d.dept_name;
+
+select * from  vw_employee_department_info;
+
+#2
+create view Department_wise_Bonus_Summary as
+(
+select 
+sum(b.bonus_amount) as total_bonus,e.department
+from tbl_emp_detail_data e join tbl_bonus b
+on e.emp_id=b.emp_id
+group by e.department
+);
+select * from Department_wise_Bonus_Summary;
+#3
+create view Formatted_Employee as 
+select 
+timestampdiff(YEAR,STR_TO_DATE(joining_date, '%Y-%m-%d'),curdate()) as  experience,
+concat
+(
+ CONCAT(UPPER(LEFT(first_name, 1)), LOWER(SUBSTRING(first_name, 2))),"",
+  CONCAT(UPPER(LEFT(last_name, 1)), LOWER(SUBSTRING(last_name, 2)))
+  )
+  from tbl_emp_detail_data;
+  
+  select * from Formatted_Employee ;
+  
+  #4
+  create view employee_bonus_amount as 
+  select 
+  e.emp_id,b.bonus_amount,e.salary,
+  (e.salary + coalesce(b.bonus_amount, 0)) as total_salary,
+  coalesce(b.bonus_amount,0) as no_bonus 
+  from tbl_emp_detail_data e left join tbl_bonus b on e.emp_id=b.emp_id 
+  group by e.emp_id,b.bonus_amount,e.salary
+  order by total_salary;
+  
+  select * from employee_bonus_amount ;
+  
+#5
+create view  project_details as 
+select e.emp_id,p.project_name,e.first_name,
+p.status,
+e.department
+from tbl_emp_detail_data e join tbl_project_deatils p 
+on e.emp_id=p.emp_id_no;
+
+select * from  project_details;
